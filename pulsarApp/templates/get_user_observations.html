@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="container">
+		<table class="table table-striped">
+		{% if user %}
+		<h3>Наблюдения пользователя {{user.name}}</h3>
+		{% endif %}
+		<thead>
+			<tr>
+				<td>Date</td>
+				<td>Oneid</td>
+				<td>Shift</td>
+				<td>Department</td>
+				<td>Area</td>
+				<td>Employee</td>
+				<td>Activity</td>
+
+			</tr>
+		</thead>
+		<tbody>	
+			{% for observation in observations %}
+			<tr>
+				<td>{{observation.timest}}</td>
+				<td>{{observation.oneviewid}}</td>
+				<td>{{observation.shift}}</td>
+				<td>{{observation.department}}</td>
+				<td>{{observation.area}}</td>
+				<td>{{observation.employee_exam}}</td>
+				<td>{{observation.activity}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>	
+		<table>
+	</div>
+{% endblock %}
