@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField, SelectField, TextAreaField
+from wtforms import SubmitField, StringField, SelectField, TextAreaField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length, NoneOf
 from wtforms.fields.html5 import DateField
 
@@ -68,3 +68,10 @@ class AddUserForm(FlaskForm):
     department = SelectField('Отдел', choices=department_data, validators=[DataRequired(), NoneOf(block, message=select_message)], default='blocked')
     oneviewid = StringField('Oneviewid', validators=[DataRequired(message="Введите oneviewid"), Length(min=8,max=8,message='Oneviewid должен быть в формате: 98909713')])
     submit = SubmitField('Отправить')
+
+
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Sign In')

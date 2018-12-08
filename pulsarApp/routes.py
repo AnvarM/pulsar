@@ -1,9 +1,11 @@
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, url_for, redirect, flash
 from pulsarApp import app
-from pulsarApp.forms import PulsarFeedbackForm, GetUserByIdForm, AddUserForm
+from pulsarApp.forms import PulsarFeedbackForm, GetUserByIdForm, AddUserForm, LoginForm
 from time import time, ctime
 from pulsarApp import db
-from pulsarApp.models import Users, Observations
+from pulsarApp.models import Users, Observations, Admin
+from flask_login import current_user, login_user, logout_user, login_required
+from werkzeug.urls import url_parse
 
 @app.route("/")
 def index():
@@ -48,6 +50,7 @@ def checkUserObservations():
     return render_template("check_user_observations_form.html", form=form)
 
 @app.route("/addUser")
+@login_required
 def addUser():
     form = AddUserForm()
     return render_template("add_user.html", form=form)
@@ -76,7 +79,8 @@ def getUserObservations():
     if (Users.query.filter_by(oneid=oneviewid).first()):
         user = Users.query.filter_by(oneid=oneviewid).first()
         observations = user.observations.order_by(Observations.id.desc()).all()
-        return render_template("get_user_observations.html", observations=observations, user = user )
+        amount_of_observations = len(observations)
+        return render_template("get_user_observations.html", observations=observations, user = user, amount_of_observations=amount_of_observations )
     else:
         msg = "Такого пользователя нет в базе данных, обратитесь к администратору"
         return render_template('thanks.html', msg=msg)
@@ -105,3 +109,28 @@ def getuser(oneid):
         return jsonify(Users.getUser(oneid))
     else:
         return "Такого пользователя не существует"
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Admin.query.filter_by(name=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
+    return render_template('login.html', title='Sign In', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+

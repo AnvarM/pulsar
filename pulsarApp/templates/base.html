@@ -11,8 +11,17 @@
 
   </head>
   <body>
+
   	<div class = "container">
+        <a href="{{url_for('index')}}"><button class="btn btn-success" >Pulsar</button></a>
+        <a href="{{url_for('checkUserObservations')}}"><button class="btn btn-success" >Check observations</button></a>
+        <a href="{{url_for('last50')}}"><button class="btn btn-success" >Last 50</button></a>
+        <a href="{{url_for('addUser')}}"><button class="btn btn-success" >Add User</button></a>
+        {% if current_user.is_authenticated %}
+        <a href="{{url_for('logout')}}"><button class="btn btn-success" >Logout</button></a>
+        {% endif %}
   		<div class="jumbotron">
+
 		</div>
   	</div>
 

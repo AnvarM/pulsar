@@ -1,6 +1,8 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block content %}
+
     <div class = "container">
 
          <form class="form-horizontal" action="" method="post" novalidate>
@@ -155,9 +157,9 @@
 			 </div>
 
              <div class="form-group">
-			  <label class="col-sm-4 control-label">{{ form.submit.label }}</label>
+			  <label class="col-sm-4 control-label"></label>
 			  <div class="col-sm-4">
-			   {{ form.submit() }}
+			   {{ form.submit(class_="btn btn-success") }}
 			  </div>
 			 </div>
         </form>
